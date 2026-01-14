@@ -123,6 +123,31 @@ export const VDataTableHeaders = genericComponent<VDataTableHeadersSlots>()({
         : props.sortDescIcon
     }
 
+    function getAriaSort (column: InternalDataTableHeader) {
+        if (!column.sortable || props.disableSort) return undefined
+
+        const item = sortBy.value.find(i => i.key === column.key)
+        if (!item) return undefined // oder 'none', wenn du explizit willst
+
+        return item.order === 'asc'
+            ? 'ascending'
+            : 'descending'
+    }
+
+    function getSortAriaLabel (column: InternalDataTableHeader) {
+        if (!column.sortable || props.disableSort) return column.title
+
+        const item = sortBy.value.find(i => i.key === column.key)
+
+        if (!item) {
+            return `${column.title}. ${t('$vuetify.dataTable.ariaLabel.sortNone')} ${t('$vuetify.dataTable.ariaLabel.activateAscending')}`
+        }
+
+        return item.order === 'asc'
+            ? `${column.title}. ${t('$vuetify.dataTable.ariaLabel.sortAscending')} ${t('$vuetify.dataTable.ariaLabel.activateDescending')}`
+            : `${column.title}. ${t('$vuetify.dataTable.ariaLabel.sortDescending')} ${t('$vuetify.dataTable.ariaLabel.activateAscending')}`
+    }
+
     const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(() => props.color)
 
     const { displayClasses, mobile } = useDisplay(props)
@@ -156,6 +181,8 @@ export const VDataTableHeaders = genericComponent<VDataTableHeadersSlots>()({
       return (
         <VDataTableColumn
           tag="th"
+          aria-sort={ getAriaSort(column) }
+          aria-label={ getSortAriaLabel(column) }
           align={ column.align }
           class={[
             {
