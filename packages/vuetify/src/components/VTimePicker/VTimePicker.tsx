@@ -175,6 +175,26 @@ export const VTimePicker = genericComponent<VTimePickerSlots>()({
       }
     })
 
+    const isHourInvalid = computed(() => {
+        return inputHour.value != null &&
+            isAllowedHourCb.value &&
+            !isAllowedHourCb.value(inputHour.value)
+    })
+    
+    const isMinuteInvalid = computed(() => {
+        return inputMinute.value != null &&
+            isAllowedMinuteCb.value &&
+            !isAllowedMinuteCb.value(inputMinute.value)
+    })
+    
+    const isSecondInvalid = computed(() => {
+        return props.useSeconds &&
+            inputSecond.value != null &&
+            isAllowedSecondCb.value &&
+            !isAllowedSecondCb.value(inputSecond.value)
+    })
+
+
     const isAmPm = computed((): boolean => {
       return props.format === 'ampm'
     })
@@ -353,6 +373,9 @@ export const VTimePicker = genericComponent<VTimePickerSlots>()({
                 minute={ inputMinute.value as number }
                 period={ period.value }
                 second={ inputSecond.value as number }
+                hourInvalid={ isHourInvalid.value }
+                minuteInvalid={ isMinuteInvalid.value }
+                secondInvalid={ isSecondInvalid.value }
                 viewMode={ viewMode.value }
                 onUpdate:hour={ (val: number) => inputHour.value = val }
                 onUpdate:minute={ (val: number) => inputMinute.value = val }

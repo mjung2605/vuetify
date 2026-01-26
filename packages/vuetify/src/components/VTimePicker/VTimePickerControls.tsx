@@ -26,6 +26,9 @@ export const makeVTimePickerControlsProps = propsFactory({
   minute: [Number, String] as PropType<number | string | null>,
   second: [Number, String] as PropType<number | string | null>,
   period: String as PropType<Period>,
+  hourInvalid: Boolean,
+  minuteInvalid: Boolean,
+  secondInvalid: Boolean,
   readonly: Boolean,
   useSeconds: Boolean,
   value: Number,
@@ -224,13 +227,22 @@ export const VTimePickerControls = genericComponent()({
               color={ props.color }
               disabled={ props.disabled }
               label={ t('$vuetify.timePicker.hour') }
+              aria-invalid={ props.hourInvalid ? 'true' : undefined }
+              aria-describedby={ props.hourInvalid ? 'v-time-picker-hour-error' : undefined }
               modelValue={ hour.value }
               onUpdate:modelValue={ v => hour.value = v }
               onKeydown={ onHourFieldKeydown }
               onBeforeinput={ hourInputFilter }
               onFocus={ () => emit('update:viewMode', 'hour') }
             />
-
+            { props.hourInvalid && (
+              // TODO: i18n
+              <span
+                id="v-time-picker-hour-error"
+                class="v-sr-only"
+              >
+                This value is not allowed
+              </span>) }
             <span class="v-time-picker-controls__time__separator">:</span>
 
             <VTimePickerField
@@ -239,31 +251,55 @@ export const VTimePickerControls = genericComponent()({
               color={ props.color }
               disabled={ props.disabled }
               label={ t('$vuetify.timePicker.minute') }
+              aria-invalid={ props.minuteInvalid ? 'true' : undefined }
+              aria-describedby={ props.minuteInvalid ? 'v-time-picker-minute-error' : undefined }
               modelValue={ minute.value }
               onUpdate:modelValue={ v => minute.value = v }
               onKeydown={ onMinuteFieldKeydown }
               onBeforeinput={ minuteInputFilter }
               onFocus={ () => emit('update:viewMode', 'minute') }
             />
+            { props.minuteInvalid && (
+              // TODO: i18n
+              <span
+                id="v-time-picker-minute-error"
+                class="v-sr-only"
+              >
+                This value is not allowed
+              </span>) }
 
             { props.useSeconds && (
               <span key="secondsDivider" class="v-time-picker-controls__time__separator">:</span>
             )}
 
             { props.useSeconds && (
-              <VTimePickerField
-                key="secondsVal"
-                ref={ secondInputRef }
-                active={ props.viewMode === 'second' }
-                color={ props.color }
-                disabled={ props.disabled }
-                label={ t('$vuetify.timePicker.second') }
-                modelValue={ second.value }
-                onUpdate:modelValue={ v => second.value = v }
-                onKeydown={ onSecondFieldKeydown }
-                onBeforeinput={ secondInputFilter }
-                onFocus={ () => emit('update:viewMode', 'second') }
-              />
+              <>
+                <VTimePickerField
+                  key="secondsVal"
+                  ref={ secondInputRef }
+                  active={ props.viewMode === 'second' }
+                  color={ props.color }
+                  disabled={ props.disabled }
+                  label={ t('$vuetify.timePicker.second') }
+                  aria-invalid={ props.secondInvalid ? 'true' : undefined }
+                  aria-describedby={ props.secondInvalid ? 'v-time-picker-second-error' : undefined }
+                  modelValue={ second.value }
+                  onUpdate:modelValue={ v => second.value = v }
+                  onKeydown={ onSecondFieldKeydown }
+                  onBeforeinput={ secondInputFilter }
+                  onFocus={ () => emit('update:viewMode', 'second') }
+                />
+
+                { props.secondInvalid && (
+                  // TODO: i18n
+                  <span
+                    id="v-time-picker-second-error"
+                    class="v-sr-only"
+                  >
+                    This value is not allowed
+                  </span>) 
+                }
+              </>
             )}
 
             { props.ampm && (
