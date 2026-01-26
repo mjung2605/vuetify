@@ -101,6 +101,8 @@ export const VTreeviewItem = genericComponent<VTreeviewItemSlots>()({
             },
             props.class,
           ]}
+          role="treeitem"
+          aria-expanded={ props.toggleIcon ? String(vListItemRef.value?.isActivated) : undefined }
           ripple={ false }
           onClick={ activateGroupActivator }
         >
@@ -131,6 +133,8 @@ export const VTreeviewItem = genericComponent<VTreeviewItemSlots>()({
                               icon={ props.toggleIcon }
                               loading={ props.loading }
                               variant="text"
+                              tabindex="-1"
+                              aria-hidden="true"
                               onClick={ onClickAction }
                             >
                               {{
